@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { agentService, type Agent } from '../services/agentService';
 import './Home.css';
@@ -10,12 +10,7 @@ export const Home: React.FC = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 
-  useEffect(() => {
-    loadAgents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, category]);
-
-  const loadAgents = async () => {
+  const loadAgents = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -44,7 +39,11 @@ export const Home: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, category]);
+
+  useEffect(() => {
+    loadAgents();
+  }, [loadAgents]);
 
   return (
     <div className="home-container">
