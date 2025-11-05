@@ -89,11 +89,11 @@ export const CreateAgent: React.FC = () => {
         avatar: avatarFile || undefined,
       };
       
-      const agent = await agentService.create(agentData);
-      navigate(`/agents/${agent.id}`);
+      await agentService.create(agentData);
+      // Navigate to dashboard with success message
+      navigate('/dashboard', { state: { message: 'Agent created successfully! It will be reviewed by an admin before appearing in the marketplace.' } });
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create agent');
-    } finally {
       setLoading(false);
     }
   };

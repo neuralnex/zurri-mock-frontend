@@ -8,6 +8,8 @@ import { AgentDetail } from './pages/AgentDetail';
 import { CreateAgent } from './pages/CreateAgent';
 import { CreatorProfile } from './pages/CreatorProfile';
 import { UserProfile } from './pages/UserProfile';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { MyAgents } from './pages/MyAgents';
 import { Chat } from './pages/Chat';
 import { Wallet } from './pages/Wallet';
 import { Dashboard } from './pages/Dashboard';
@@ -32,7 +34,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/agents/:id" element={<AgentDetail />} />
           <Route
             path="/agents/:id/chat"
             element={
@@ -41,6 +42,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/agents/:id" element={<AgentDetail />} />
           <Route
             path="/wallet"
             element={
@@ -70,6 +72,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agents/my/list"
+            element={
+              <ProtectedRoute>
+                <MyAgents />
               </ProtectedRoute>
             }
           />

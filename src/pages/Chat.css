@@ -158,6 +158,11 @@
   border-radius: 6px;
   margin-bottom: 6px;
   font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.file-icon {
+  font-size: 1.1rem;
 }
 
 .file-name {
@@ -234,5 +239,159 @@
 .file-link:hover {
   background: rgba(102, 126, 234, 0.2);
   text-decoration: underline;
+}
+
+.chat-messages.dragging {
+  position: relative;
+}
+
+.drag-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(102, 126, 234, 0.1);
+  border: 3px dashed #667eea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #667eea;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.metadata-input-container {
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+
+.metadata-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.metadata-header label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #333;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.metadata-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-size: 0.875rem;
+  resize: vertical;
+  margin-bottom: 4px;
+}
+
+.metadata-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.metadata-hint {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.metadata-button {
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+}
+
+.metadata-button:hover {
+  background: #e0e0e0;
+}
+
+.metadata-button.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.file-preview-image {
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.message-file-item {
+  margin-bottom: 8px;
+}
+
+.message-file-item:last-child {
+  margin-bottom: 0;
+}
+
+.message-metadata {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.message-metadata summary {
+  cursor: pointer;
+  color: #667eea;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.message-metadata pre {
+  margin: 8px 0 0 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.75rem;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+}
+
+.agent-description-header {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: normal;
+  margin-left: 12px;
+}
+
+.empty-hint {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 8px;
 }
 
