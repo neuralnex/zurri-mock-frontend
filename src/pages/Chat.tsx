@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { chatService, type ChatMessage } from '../services/chatService';
 import { agentService, type Agent } from '../services/agentService';
@@ -17,9 +17,11 @@ export const Chat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<FileWithPreview[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingAgent, setLoadingAgent] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agentError, setAgentError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | undefined>();
   const [showMetadata, setShowMetadata] = useState(false);
   const [metadataInput, setMetadataInput] = useState('');
@@ -27,6 +29,51 @@ export const Chat: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const metadataInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const loadAgent = useCallback(async () => {
+    if (!id) return;
+    try {
+      setLoadingAgent(true);
+      setAgentError(null);
+      const data = await agentService.getById(id);
+      if (!data || !data.id) {
+        throw new Error('Invalid agent data received');
+      }
+      setAgent(data);
+    } catch (err: any) {
+      console.error('Failed to load agent:', err);
+      setAgentError(err.response?.data?.error || err.message || 'Failed to load agent');
+      setAgent(null);
+    } finally {
+      setLoadingAgent(false);
+    }
+  }, [id]);
+
+  const loadHistory = useCallback(async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      const history = await chatService.getHistory(id, { limit: 50 });
+      const validMessages = Array.isArray(history) ? history : [];
+      setMessages(validMessages);
+      if (validMessages.length > 0) {
+        const lastMessage = validMessages[validMessages.length - 1];
+        if (lastMessage.conversationId) {
+          setConversationId(lastMessage.conversationId);
+        }
+      }
+    } catch (err: any) {
+      console.error('Failed to load history:', err);
+      // Don't set error for history, just show empty state
+      setMessages([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -37,7 +84,7 @@ export const Chat: React.FC = () => {
       loadAgent();
       loadHistory();
     }
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, loadAgent, loadHistory, navigate]);
 
   useEffect(() => {
     scrollToBottom();
@@ -53,37 +100,6 @@ export const Chat: React.FC = () => {
       });
     };
   }, [selectedFiles]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const loadAgent = async () => {
-    try {
-      const data = await agentService.getById(id!);
-      setAgent(data);
-    } catch (err) {
-      console.error('Failed to load agent:', err);
-    }
-  };
-
-  const loadHistory = async () => {
-    try {
-      setLoading(true);
-      const history = await chatService.getHistory(id!, { limit: 50 });
-      setMessages(history);
-      if (history.length > 0) {
-        const lastMessage = history[history.length - 1];
-        if (lastMessage.conversationId) {
-          setConversationId(lastMessage.conversationId);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load history:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getFileType = (file: File): 'audio' | 'image' | 'video' | 'document' | 'code' | 'other' => {
     if (file.type.startsWith('audio/')) return 'audio';
@@ -328,8 +344,33 @@ export const Chat: React.FC = () => {
     );
   };
 
-  if (!agent) {
+  if (loadingAgent) {
     return <div className="loading">Loading agent...</div>;
+  }
+
+  if (agentError) {
+    return (
+      <div className="chat-container">
+        <div className="chat-header">
+          <Link to="/" className="back-link">← Back to Marketplace</Link>
+        </div>
+        <div className="error-message">
+          <p>{agentError}</p>
+          <button onClick={() => loadAgent()} className="retry-button">Retry</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!agent) {
+    return (
+      <div className="chat-container">
+        <div className="chat-header">
+          <Link to="/" className="back-link">← Back to Marketplace</Link>
+        </div>
+        <div className="error-message">Agent not found</div>
+      </div>
+    );
   }
 
   return (

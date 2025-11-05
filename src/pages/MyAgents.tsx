@@ -19,10 +19,15 @@ export const MyAgents: React.FC = () => {
   const loadAgents = async () => {
     try {
       setLoading(true);
+      setError('');
       const data = await agentService.getMyAgents();
-      setAgents(data);
+      // Ensure agents is an array and validate data
+      const validAgents = Array.isArray(data) ? data.filter(agent => agent && agent.id) : [];
+      setAgents(validAgents);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load agents');
+      console.error('Failed to load agents:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to load agents');
+      setAgents([]);
     } finally {
       setLoading(false);
     }

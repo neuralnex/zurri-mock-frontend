@@ -21,10 +21,29 @@ export const AgentDetail: React.FC = () => {
   const loadAgent = async () => {
     try {
       setLoading(true);
+      setError('');
       const data = await agentService.getById(id!);
-      setAgent(data);
+      if (!data || !data.id) {
+        throw new Error('Invalid agent data received');
+      }
+      // Validate and sanitize agent data
+      const sanitizedAgent = {
+        ...data,
+        name: data.name || 'Unnamed Agent',
+        description: data.description || 'No description',
+        reputation: data.reputation || 0,
+        pointsPerTask: data.pointsPerTask || 0,
+        category: data.category || 'Uncategorized',
+        usageCount: data.usageCount || 0,
+        ratingCount: data.ratingCount || 0,
+        status: data.status || 'pending',
+        capabilities: Array.isArray(data.capabilities) ? data.capabilities : [],
+      };
+      setAgent(sanitizedAgent);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load agent');
+      console.error('Failed to load agent:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to load agent');
+      setAgent(null);
     } finally {
       setLoading(false);
     }
@@ -58,7 +77,7 @@ export const AgentDetail: React.FC = () => {
             <strong>Category:</strong> {agent.category || 'Uncategorized'}
           </div>
           <div className="meta-item">
-            <strong>Reputation:</strong> ⭐ {agent.reputation.toFixed(1)} ({agent.ratingCount} ratings)
+            <strong>Reputation:</strong> ⭐ {Number(agent.reputation).toFixed(1)} ({agent.ratingCount} ratings)
           </div>
           <div className="meta-item">
             <strong>Usage:</strong> {agent.usageCount} tasks
