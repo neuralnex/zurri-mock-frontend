@@ -43,7 +43,7 @@ export const Home: React.FC = () => {
               <>
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/wallet">Wallet</Link>
-                <Link to="/agents/my">My Agents</Link>
+                <Link to="/agents/my/list">My Agents</Link>
                 {user?.isAdmin && <Link to="/admin">Admin</Link>}
                 <span className="user-name">{user?.email}</span>
                 <button onClick={logout} className="logout-button">Logout</button>

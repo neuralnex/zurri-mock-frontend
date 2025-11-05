@@ -58,14 +58,14 @@ export const Dashboard: React.FC = () => {
         <div className="dashboard-card">
           <h2>My Agents</h2>
           <div className="agents-count">{myAgents.length}</div>
-          <Link to="/agents/my" className="dashboard-link">View My Agents →</Link>
+          <Link to="/agents/my/list" className="dashboard-link">View My Agents →</Link>
         </div>
 
         <div className="dashboard-card">
           <h2>Quick Actions</h2>
           <div className="quick-actions">
             <Link to="/" className="action-button">Browse Agents</Link>
-            <Link to="/agents/create" className="action-button">Create Agent</Link>
+            <Link to="/agents/new" className="action-button">Create Agent</Link>
           </div>
         </div>
       </div>
