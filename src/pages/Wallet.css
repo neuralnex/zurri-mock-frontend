@@ -1,0 +1,189 @@
+.wallet-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.wallet-container h1 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.wallet-balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.wallet-balance-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.balance-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.points {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.dollars {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.free-tasks {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.fund-wallet-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fund-wallet-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.fund-input-group {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.fund-input-group label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.fund-input-group input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.fund-input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.fund-button {
+  padding: 12px 30px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.fund-button:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.fund-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.transactions-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-table th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #eee;
+  color: #555;
+  font-weight: 600;
+}
+
+.transactions-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.transactions-table tr:hover {
+  background: #f9f9f9;
+}
+
+.type-purchase {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.type-charge {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.type-refund {
+  color: #2196f3;
+  font-weight: 500;
+}
+
+.type-free {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.positive {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.negative {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.status-completed {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.status-pending {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.status-failed {
+  color: #f44336;
+  font-weight: 500;
+}
+
