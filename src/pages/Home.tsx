@@ -15,12 +15,6 @@ export const Home: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category]);
 
-  // Load agents on mount
-  useEffect(() => {
-    loadAgents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const loadAgents = async () => {
     try {
       setLoading(true);
@@ -31,7 +25,18 @@ export const Home: React.FC = () => {
         search: search || undefined,
         category: category || undefined,
       });
-      setAgents(response.agents || []);
+      // Ensure agents array is properly formatted
+      const agentsList = Array.isArray(response?.agents) ? response.agents : [];
+      // Validate and sanitize agent data
+      const validAgents = agentsList.filter(agent => agent && agent.id).map(agent => ({
+        ...agent,
+        name: agent.name || 'Unnamed Agent',
+        description: agent.description || 'No description',
+        reputation: agent.reputation || 0,
+        pointsPerTask: agent.pointsPerTask || 0,
+        category: agent.category || 'Uncategorized',
+      }));
+      setAgents(validAgents);
     } catch (err: any) {
       console.error('Failed to load agents:', err);
       setError(err.response?.data?.error || err.message || 'Failed to load agents');
@@ -67,29 +72,29 @@ export const Home: React.FC = () => {
           </select>
         </div>
 
-        {error && (
-          <div className="error-message">
-            {error}
-            <button onClick={() => loadAgents()} style={{ marginLeft: '10px', padding: '4px 8px' }}>
+        {loading ? (
+          <div className="loading">Loading agents...</div>
+        ) : error ? (
+          <div className="no-agents">
+            <p>{error}</p>
+            <button onClick={() => loadAgents()} className="retry-button">
               Retry
             </button>
           </div>
-        )}
-
-        {loading ? (
-          <div className="loading">Loading agents...</div>
         ) : agents.length > 0 ? (
           <div className="agents-grid">
             {agents.map((agent) => (
               <Link key={agent.id} to={`/agents/${agent.id}`} className="agent-card">
                 {agent.avatar && (
-                  <img src={agent.avatar} alt={agent.name} className="agent-avatar" />
+                  <img src={agent.avatar} alt={agent.name} className="agent-avatar" onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }} />
                 )}
                 <h3>{agent.name}</h3>
                 <p className="agent-description">{agent.description}</p>
                 <div className="agent-meta">
-                  <span className="agent-category">{agent.category || 'Uncategorized'}</span>
-                  <span className="agent-reputation">⭐ {agent.reputation.toFixed(1)}</span>
+                  <span className="agent-category">{agent.category}</span>
+                  <span className="agent-reputation">⭐ {Number(agent.reputation).toFixed(1)}</span>
                 </div>
                 <div className="agent-pricing">
                   <span className="points">{agent.pointsPerTask} points</span>
@@ -100,7 +105,7 @@ export const Home: React.FC = () => {
           </div>
         ) : (
           <div className="no-agents">
-            {error ? 'Failed to load agents. Please try again.' : 'No agents found. Try adjusting your search.'}
+            No agents found. Try adjusting your search.
           </div>
         )}
       </main>
