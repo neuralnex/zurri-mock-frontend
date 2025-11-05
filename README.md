@@ -16,6 +16,29 @@ A React TypeScript frontend application for the Zurri AI Agents Marketplace API.
 This frontend connects to the Zurri API server hosted at:
 **https://nexusbert-zurri.hf.space/api**
 
+## Deployment
+
+### Vercel Deployment
+
+This frontend is configured for Vercel deployment with:
+- `vercel.json` - Configured for SPA routing (all routes serve `index.html`)
+- Automatic builds on push to main branch
+
+### Environment Variables
+
+If deploying to Vercel, set these in Vercel dashboard:
+- Not required for frontend (API URL is hardcoded in `src/config/api.ts`)
+
+### Backend Configuration
+
+**Important**: When deploying the frontend separately (e.g., on Vercel), make sure to set the `FRONTEND_URL` environment variable in your backend:
+
+```env
+FRONTEND_URL=https://zurri-mock-frontend.vercel.app
+```
+
+This ensures payment callbacks redirect to the correct frontend URL.
+
 ## Getting Started
 
 ### Prerequisites
@@ -71,7 +94,7 @@ src/
 │   ├── Register.tsx        # Registration page
 │   ├── AgentDetail.tsx     # Agent details page
 │   ├── Chat.tsx            # Chat interface
-│   ├── Wallet.tsx          # Wallet management
+│   ├── Wallet.tsx         # Wallet management
 │   └── Dashboard.tsx       # User dashboard
 ├── App.tsx                  # Main app component with routing
 └── main.tsx                 # Entry point
@@ -85,46 +108,39 @@ The frontend uses the following API endpoints:
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user
+- `POST /api/auth/forgot-password` - Request password reset
+- `POST /api/auth/reset-password` - Reset password
 
 ### Agents
-- `GET /api/agents` - List agents
+- `GET /api/agents` - List all approved agents
 - `GET /api/agents/:id` - Get agent details
-- `GET /api/agents/my/list` - Get my agents
+- `GET /api/agents/my/list` - Get user's agents (creators)
+- `POST /api/agents` - Create new agent (creators)
+- `PUT /api/agents/:id` - Update agent (creators)
+- `DELETE /api/agents/:id` - Delete agent (creators)
 
 ### Chat
-- `POST /api/chat/:id/message` - Send message
+- `POST /api/chat/:id/message` - Send message to agent
 - `GET /api/chat/:id/history` - Get chat history
 
 ### Wallet
 - `GET /api/wallet` - Get wallet balance
-- `POST /api/wallet/fund` - Fund wallet
-- `GET /api/wallet/transactions` - Get transactions
+- `POST /api/wallet/fund` - Fund wallet via Paystack
+- `GET /api/wallet/verify/:reference` - Verify transaction
+- `GET /api/wallet/transactions` - Get transaction history
 
-## Environment Variables
+## Troubleshooting
 
-The API base URL is configured in `src/config/api.ts`. To change it, modify:
+### 404 Errors on Refresh
 
-```typescript
-export const API_BASE_URL = 'https://nexusbert-zurri.hf.space/api';
-```
+If you get 404 errors when refreshing pages on Vercel, make sure:
+1. `vercel.json` is present in the root directory
+2. The file contains the rewrite rule for SPA routing
+3. Redeploy after adding `vercel.json`
 
-## Features in Development
+### Payment Callback Issues
 
-- [ ] Creator dashboard
-- [ ] Admin dashboard
-- [ ] Agent creation/editing
-- [ ] Password reset flow
-- [ ] Transaction history pagination
-- [ ] Agent search and filtering enhancements
-
-## Technologies
-
-- **React 19** - UI framework
-- **TypeScript** - Type safety
-- **React Router** - Routing
-- **Axios** - HTTP client
-- **Vite** - Build tool
-
-## License
-
-MIT
+If payment callbacks don't redirect correctly:
+1. Check that `FRONTEND_URL` is set in backend environment variables
+2. Ensure `FRONTEND_URL` points to your Vercel deployment URL
+3. Verify Paystack callback URL is set to: `https://nexusbert-zurri.hf.space/api/wallet/callback`
