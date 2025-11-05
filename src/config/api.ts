@@ -31,7 +31,9 @@ export const API_ENDPOINTS = {
   
   // User
   userHistory: '/users/me/history',
+  updateProfile: '/users/me',
   becomeCreator: '/users/become-creator',
+  creatorProfile: '/users/creator-profile',
   
   // Creator
   creatorOverview: '/creators/me/overview',

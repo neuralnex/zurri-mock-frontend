@@ -5,20 +5,33 @@ import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { AgentDetail } from './pages/AgentDetail';
+import { CreateAgent } from './pages/CreateAgent';
+import { CreatorProfile } from './pages/CreatorProfile';
+import { UserProfile } from './pages/UserProfile';
 import { Chat } from './pages/Chat';
 import { Wallet } from './pages/Wallet';
 import { Dashboard } from './pages/Dashboard';
 import { PaymentSuccess, PaymentFailed } from './pages/PaymentCallback';
+import { Header } from './components/Header';
 import './App.css';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/agents/new"
+            element={
+              <ProtectedRoute>
+                <CreateAgent />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/agents/:id" element={<AgentDetail />} />
           <Route
             path="/agents/:id/chat"
@@ -41,6 +54,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creator-profile"
+            element={
+              <ProtectedRoute>
+                <CreatorProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
               </ProtectedRoute>
             }
           />

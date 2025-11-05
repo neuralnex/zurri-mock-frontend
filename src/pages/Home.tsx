@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { agentService, type Agent } from '../services/agentService';
-import { useAuth } from '../contexts/AuthContext';
 import './Home.css';
 
 export const Home: React.FC = () => {
@@ -10,7 +9,6 @@ export const Home: React.FC = () => {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     loadAgents();
@@ -35,29 +33,6 @@ export const Home: React.FC = () => {
 
   return (
     <div className="home-container">
-      <header className="header">
-        <div className="header-content">
-          <h1>Zurri Agents Marketplace</h1>
-          <nav className="nav">
-            {isAuthenticated ? (
-              <>
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/wallet">Wallet</Link>
-                <Link to="/agents/my/list">My Agents</Link>
-                {user?.isAdmin && <Link to="/admin">Admin</Link>}
-                <span className="user-name">{user?.email}</span>
-                <button onClick={logout} className="logout-button">Logout</button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">Login</Link>
-                <Link to="/register">Register</Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
-
       <main className="main-content">
         <div className="search-section">
           <input

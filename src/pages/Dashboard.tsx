@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { walletService } from '../services/walletService';
 import { agentService, type Agent } from '../services/agentService';
@@ -9,6 +9,7 @@ import './Dashboard.css';
 
 export const Dashboard: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [wallet, setWallet] = useState<any>(null);
   const [myAgents, setMyAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,21 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleBecomeCreator = async () => {
+    // Check if profile exists first
+    try {
+      const profile = await userService.getCreatorProfile();
+      if (!profile) {
+        // Redirect to profile setup
+        navigate('/creator-profile');
+        return;
+      }
+    } catch (err) {
+      // Profile doesn't exist, redirect to setup
+      navigate('/creator-profile');
+      return;
+    }
+
+    // Profile exists, proceed with becoming creator
     setBecomingCreator(true);
     setMessage(null);
     try {
@@ -48,7 +64,14 @@ export const Dashboard: React.FC = () => {
       // Reload page to update context
       window.location.reload();
     } catch (err: any) {
-      setMessage(err.response?.data?.error || 'Failed to become creator');
+      const errorMsg = err.response?.data?.error || 'Failed to become creator';
+      if (err.response?.data?.profileEndpoint) {
+        // Profile required, redirect to setup
+        setMessage('Please complete your creator profile first');
+        setTimeout(() => navigate('/creator-profile'), 2000);
+      } else {
+        setMessage(errorMsg);
+      }
     } finally {
       setBecomingCreator(false);
     }

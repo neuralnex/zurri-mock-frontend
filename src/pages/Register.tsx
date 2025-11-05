@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { userService } from '../services/userService';
 import './Login.css';
 import './Register.css';
 
@@ -34,21 +33,12 @@ export const Register: React.FC = () => {
     try {
       await register(email, password, name || undefined);
       
-      // If registering as creator, call become-creator endpoint
+      // If registering as creator, redirect to profile setup
       if (registerType === 'creator') {
-        try {
-          await userService.becomeCreator();
-          // Refresh user data to get updated isCreator status
-          const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
-          updatedUser.isCreator = true;
-          localStorage.setItem('user', JSON.stringify(updatedUser));
-        } catch (creatorErr: any) {
-          // If become-creator fails, user is still registered as regular user
-          console.warn('Become creator failed, user registered as regular user:', creatorErr);
-        }
+        navigate('/creator-profile');
+      } else {
+        navigate('/');
       }
-      
-      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed');
     } finally {
