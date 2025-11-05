@@ -12,20 +12,30 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     loadAgents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, category]);
+
+  // Load agents on mount
+  useEffect(() => {
+    loadAgents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadAgents = async () => {
     try {
       setLoading(true);
+      setError('');
       const response = await agentService.list({
         page: 1,
         limit: 20,
         search: search || undefined,
         category: category || undefined,
       });
-      setAgents(response.agents);
+      setAgents(response.agents || []);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load agents');
+      console.error('Failed to load agents:', err);
+      setError(err.response?.data?.error || err.message || 'Failed to load agents');
+      setAgents([]);
     } finally {
       setLoading(false);
     }
@@ -34,6 +44,7 @@ export const Home: React.FC = () => {
   return (
     <div className="home-container">
       <main className="main-content">
+        <h1 style={{ marginBottom: '20px', color: '#333' }}>AI Agents Marketplace</h1>
         <div className="search-section">
           <input
             type="text"
@@ -52,14 +63,22 @@ export const Home: React.FC = () => {
             <option value="code analysis">Code Analysis</option>
             <option value="data processing">Data Processing</option>
             <option value="text generation">Text Generation</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => loadAgents()} style={{ marginLeft: '10px', padding: '4px 8px' }}>
+              Retry
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="loading">Loading agents...</div>
-        ) : (
+        ) : agents.length > 0 ? (
           <div className="agents-grid">
             {agents.map((agent) => (
               <Link key={agent.id} to={`/agents/${agent.id}`} className="agent-card">
@@ -79,10 +98,10 @@ export const Home: React.FC = () => {
               </Link>
             ))}
           </div>
-        )}
-
-        {!loading && agents.length === 0 && (
-          <div className="no-agents">No agents found. Try adjusting your search.</div>
+        ) : (
+          <div className="no-agents">
+            {error ? 'Failed to load agents. Please try again.' : 'No agents found. Try adjusting your search.'}
+          </div>
         )}
       </main>
     </div>
