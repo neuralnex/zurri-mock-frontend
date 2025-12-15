@@ -6,7 +6,7 @@
 // import { useAuth } from '../contexts/AuthContext';
 // import './PaymentCallback.css';
 
-// export const PaymentSuccess: React.FC = () => {
+export const PaymentSuccess: React.FC = () => {
 //   const [searchParams] = useSearchParams();
 //   const navigate = useNavigate();
 //   const { isAuthenticated } = useAuth();
@@ -81,9 +81,9 @@
 //       </div>
 //     </div>
 //   );
-// };
+   };
 
-// export const PaymentFailed: React.FC = () => {
+ export const PaymentFailed: React.FC = () => {
 //   const [searchParams] = useSearchParams();
 //   const navigate = useNavigate();
 //   const error = searchParams.get('error');
@@ -111,5 +111,5 @@
 //       </div>
 //     </div>
 //   );
-// };
+ };
 
